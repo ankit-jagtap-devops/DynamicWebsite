@@ -1,0 +1,33 @@
+---
+ - name: Dynamic website launch on EC2
+   hosts: all
+   become: yes
+   gather_facts: true
+   tasks:
+   - name: Downloading nginx server
+     apt:
+      name: nginx
+      state: present
+
+   - name: Delete previous repo
+     shell:
+       cmd: "cd /root"
+       cmd: "rm -rf *"
+
+   - name: Cloning git repo at current location
+     shell:
+      cmd: "git clone https://github.com/ankitdattatrayjagtap/DynamicWebsite.git"
+
+   - name: change directory to DynamicWebsite
+     shell:
+      cmd: "cd DynamicWebsite"
+
+   - name: Copying all data to /var/www/html/
+     shell:
+      cmd: "rm -rf /var/www/html/*"
+      cmd: "cp -r DynamicWebsite/* /var/www/html/"
+
+   - name: Nginx service start
+     service:
+      name: nginx
+      state: started
